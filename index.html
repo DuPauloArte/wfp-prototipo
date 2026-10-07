@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Central de Cotações | WFP Logística e Transporte</title>
+  <meta name="description" content="Conceito demonstrativo da Central de Cotações da WFP.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@600;700;800;900&amp;family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+  <style>
+    :root{--yellow:#f4c430;--yellow-soft:#fff5c8;--ink:#111718;--charcoal:#1c2527;--paper:#f4f6f3;--white:#fff;--muted:#697477;--line:#dfe4df;--green:#267a4b;--green-soft:#e7f5ec;--blue:#315f96;--blue-soft:#eaf2fb;--orange:#a75a13;--orange-soft:#fff0df;--red:#a63c39;--red-soft:#fbe9e8;--radius:16px}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--paper);color:var(--ink);font-family:"Inter",system-ui,sans-serif;font-size:16px;line-height:1.45}
+    button,input,select{font:inherit}
+    button,a{color:inherit}
+    button{cursor:pointer}
+    a{text-decoration:none}
+    img{display:block;max-width:100%}
+    .app{min-height:100vh;display:grid;grid-template-columns:248px minmax(0,1fr)}
+    .sidebar{position:sticky;top:0;height:100vh;display:flex;flex-direction:column;background:var(--ink);color:white;padding:28px 20px 22px;overflow:hidden}
+    .sidebar::after{content:"";position:absolute;inset:auto -90px -80px 25px;height:220px;border:1px solid rgba(244,196,48,.14);border-radius:50%;box-shadow:0 0 0 45px rgba(244,196,48,.025),0 0 0 90px rgba(244,196,48,.018);pointer-events:none}
+    .brand{position:relative;display:flex;align-items:center;min-height:62px;margin-bottom:36px}
+    .brand img{width:118px;height:64px;object-fit:contain}
+    .nav-label{margin:0 12px 10px;color:rgba(255,255,255,.38);font-size:.68rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase}
+    .side-nav{display:grid;gap:7px}
+    .side-link{display:flex;align-items:center;gap:12px;min-height:48px;padding:0 14px;border-radius:12px;color:rgba(255,255,255,.66);font-size:.88rem;font-weight:700;transition:.2s ease}
+    .side-link:hover,.side-link.active{background:rgba(244,196,48,.12);color:white}
+    .side-link.active{box-shadow:inset 3px 0 0 var(--yellow)}
+    .side-icon{width:22px;height:22px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.16);border-radius:7px;color:var(--yellow);font-size:.68rem;font-weight:900}
+    .sidebar-foot{position:relative;margin-top:auto;padding:18px 14px 0;border-top:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.48);font-size:.72rem}
+    .sidebar-foot b{display:block;color:white;font-size:.82rem;margin-bottom:3px}
+    .main{min-width:0}
+    .topbar{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:0 clamp(20px,4vw,54px);background:white;border-bottom:1px solid var(--line)}
+    .crumb{font-size:.8rem;color:var(--muted)}
+    .crumb b{color:var(--ink)}
+    .top-actions{display:flex;align-items:center;gap:12px}
+    .concept-badge{display:inline-flex;align-items:center;gap:8px;padding:8px 11px;border-radius:999px;background:var(--yellow-soft);color:#705500;font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+    .concept-badge::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--yellow)}
+    .avatar{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:var(--charcoal);color:var(--yellow);font-family:"Barlow",sans-serif;font-weight:900}
+    .user-meta{font-size:.74rem;color:var(--muted);line-height:1.25}
+    .user-meta b{display:block;color:var(--ink);font-size:.82rem}
+    .mobile-menu{display:none;border:1px solid var(--line);background:white;border-radius:10px;padding:9px 12px;font-weight:800}
+    .content{padding:38px clamp(20px,4vw,54px) 60px}
+    .page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:28px}
+    .eyebrow{display:flex;align-items:center;gap:10px;color:#8b6b00;font-size:.72rem;font-weight:850;letter-spacing:.14em;text-transform:uppercase}
+    .eyebrow::before{content:"";width:30px;height:2px;background:var(--yellow)}
+    h1,h2,h3{font-family:"Barlow",sans-serif}
+    h1{font-size:clamp(2.35rem,4.5vw,4.2rem);line-height:.96;letter-spacing:-.045em;margin:12px 0 10px}
+    .page-head p{margin:0;color:var(--muted);max-width:680px}
+    .primary-button{min-height:46px;padding:0 18px;border:0;border-radius:999px;background:var(--yellow);color:var(--ink);font-weight:850;white-space:nowrap;box-shadow:0 8px 20px rgba(139,107,0,.14)}
+    .primary-button:hover{background:#ffd33f}
+    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:24px}
+    .metric{position:relative;min-height:130px;padding:20px;background:white;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+    .metric::after{content:"";position:absolute;right:-22px;bottom:-28px;width:88px;height:88px;border:1px solid rgba(244,196,48,.22);border-radius:50%}
+    .metric-label{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--muted);font-size:.78rem;font-weight:700}
+    .metric-dot{width:9px;height:9px;border-radius:50%;background:var(--yellow)}
+    .metric strong{display:block;margin-top:18px;font-family:"Barlow",sans-serif;font-size:2.3rem;line-height:1;letter-spacing:-.04em}
+    .metric small{display:block;margin-top:8px;color:var(--muted);font-size:.72rem}
+    .metric small b{color:var(--green)}
+    .workspace{background:white;border:1px solid var(--line);border-radius:20px;box-shadow:0 18px 60px rgba(21,31,32,.06);overflow:hidden}
+    .tabs-wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 22px;border-bottom:1px solid var(--line);overflow:auto}
+    .tabs{display:flex;gap:4px;min-width:max-content}
+    .tab{position:relative;padding:19px 14px 17px;border:0;background:transparent;color:var(--muted);font-size:.8rem;font-weight:800}
+    .tab::after{content:"";position:absolute;left:12px;right:12px;bottom:-1px;height:3px;background:transparent;border-radius:3px 3px 0 0}
+    .tab[aria-selected="true"]{color:var(--ink)}
+    .tab[aria-selected="true"]::after{background:var(--yellow)}
+    .tab-count{margin-left:6px;padding:2px 6px;border-radius:999px;background:#edf0ed;font-size:.66rem}
+    .filters{display:grid;grid-template-columns:minmax(220px,1fr) 190px 170px auto;gap:12px;padding:18px 22px;background:#fafbfa;border-bottom:1px solid var(--line)}
+    .search{position:relative}
+    .search input,.filters select{width:100%;height:44px;border:1px solid #d5dbd6;border-radius:11px;background:white;color:var(--ink);outline:none}
+    .search input{padding:0 14px 0 40px}
+    .search::before{content:"⌕";position:absolute;left:14px;top:8px;color:var(--muted);font-size:1.25rem}
+    .filters select{padding:0 12px}
+    .search input:focus,.filters select:focus{border-color:#a47e00;box-shadow:0 0 0 3px rgba(244,196,48,.18)}
+    .ghost-button{min-height:44px;padding:0 15px;border:1px solid #ccd3ce;border-radius:11px;background:white;font-weight:800;white-space:nowrap}
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse;min-width:900px}
+    th{padding:13px 20px;background:#fafbfa;color:var(--muted);font-size:.67rem;text-align:left;text-transform:uppercase;letter-spacing:.08em;border-bottom:1px solid var(--line)}
+    td{padding:18px 20px;border-bottom:1px solid #edf0ed;vertical-align:middle;font-size:.82rem}
+    tbody tr{transition:background .18s ease}
+    tbody tr:hover{background:#fffdf4}
+    tbody tr:last-child td{border-bottom:0}
+    .quote-id{font-weight:850;color:#755b00}
+    .company b,.route b{display:block;color:var(--ink);font-size:.84rem}
+    .company span,.route span,.date span{display:block;color:var(--muted);font-size:.72rem;margin-top:3px}
+    .status{display:inline-flex;align-items:center;gap:7px;padding:6px 9px;border-radius:999px;font-size:.69rem;font-weight:800;white-space:nowrap}
+    .status::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+    .status-novo{color:#7a5d00;background:var(--yellow-soft)}
+    .status-analise{color:var(--blue);background:var(--blue-soft)}
+    .status-proposta{color:var(--orange);background:var(--orange-soft)}
+    .status-fechado{color:var(--green);background:var(--green-soft)}
+    .status-perdido{color:var(--red);background:var(--red-soft)}
+    .detail-button{border:1px solid #d4dad5;border-radius:9px;background:white;padding:8px 11px;font-size:.72rem;font-weight:800}
+    .detail-button:hover{border-color:#a47e00;background:var(--yellow-soft)}
+    .empty{display:none;padding:56px 20px;text-align:center;color:var(--muted)}
+    .empty strong{display:block;color:var(--ink);font-family:"Barlow",sans-serif;font-size:1.5rem;margin-bottom:6px}
+    .table-foot{display:flex;justify-content:space-between;gap:20px;padding:14px 22px;background:#fafbfa;border-top:1px solid var(--line);color:var(--muted);font-size:.72rem}
+    dialog{width:min(calc(100% - 32px),720px);max-height:calc(100vh - 32px);padding:0;border:0;border-radius:22px;box-shadow:0 30px 100px rgba(0,0,0,.35);overflow:auto}
+    dialog::backdrop{background:rgba(8,13,14,.72);backdrop-filter:blur(8px)}
+    .dialog-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:26px 28px;background:var(--ink);color:white}
+    .dialog-head small{color:var(--yellow);font-weight:800;text-transform:uppercase;letter-spacing:.1em}
+    .dialog-head h2{font-size:2rem;line-height:1;margin:8px 0 0}
+    .close-button{width:40px;height:40px;border:1px solid rgba(255,255,255,.2);border-radius:50%;background:rgba(255,255,255,.08);color:white;font-size:1.25rem}
+    .dialog-body{padding:28px}
+    .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+    .detail-card{padding:15px;border:1px solid var(--line);border-radius:12px;background:#fafbfa}
+    .detail-card span{display:block;color:var(--muted);font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em}
+    .detail-card b{display:block;margin-top:6px;font-size:.88rem}
+    .section-title{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#806200;margin:26px 0 12px}
+    .note{padding:16px 18px;border-left:3px solid var(--yellow);background:var(--yellow-soft);border-radius:0 12px 12px 0;color:#534400;font-size:.84rem}
+    .timeline{display:grid;gap:14px}
+    .timeline-item{position:relative;padding-left:28px;font-size:.8rem}
+    .timeline-item::before{content:"";position:absolute;left:4px;top:5px;width:9px;height:9px;border-radius:50%;background:var(--yellow);box-shadow:0 0 0 4px var(--yellow-soft)}
+    .timeline-item:not(:last-child)::after{content:"";position:absolute;left:8px;top:17px;bottom:-16px;width:1px;background:var(--line)}
+    .timeline-item b{display:block}
+    .timeline-item span{color:var(--muted);font-size:.72rem}
+    .dialog-actions{display:flex;gap:10px;margin-top:26px;padding-top:20px;border-top:1px solid var(--line)}
+    .dialog-actions button{flex:1;min-height:44px;border-radius:999px;font-weight:850}
+    .contact-primary{border:0;background:var(--yellow)}
+    .contact-secondary{border:1px solid var(--line);background:white}
+    .toast{position:fixed;z-index:200;right:24px;bottom:24px;max-width:360px;padding:15px 18px;border-radius:12px;background:var(--ink);color:white;box-shadow:0 18px 60px rgba(0,0,0,.25);font-size:.82rem;transform:translateY(20px);opacity:0;pointer-events:none;transition:.25s ease}
+    .toast.show{transform:translateY(0);opacity:1}
+    .toast b{color:var(--yellow)}
+    @media(max-width:1050px){.app{grid-template-columns:210px minmax(0,1fr)}.metrics{grid-template-columns:1fr 1fr}.filters{grid-template-columns:1fr 1fr}.filters .search{grid-column:1/-1}}
+    @media(max-width:760px){.app{display:block}.sidebar{position:fixed;z-index:50;inset:0 auto 0 0;width:260px;transform:translateX(-102%);transition:transform .25s ease;box-shadow:20px 0 60px rgba(0,0,0,.25)}body.menu-open .sidebar{transform:translateX(0)}.mobile-menu{display:inline-flex}.crumb{display:none}.user-meta{display:none}.topbar{min-height:68px;padding:0 14px}.content{padding:28px 14px 48px}.page-head{align-items:flex-start;flex-direction:column}.primary-button{width:100%}.metrics{grid-template-columns:1fr 1fr;gap:10px}.metric{min-height:116px;padding:16px}.metric strong{font-size:2rem}.tabs-wrap{padding:0 10px}.filters{grid-template-columns:1fr;padding:14px}.filters .search{grid-column:auto}.table-wrap{overflow:visible}table{min-width:0}thead{display:none}tbody{display:grid;padding:0 14px}tr.quote-row{display:grid;grid-template-columns:1fr auto;gap:10px;padding:18px 0;border-bottom:1px solid var(--line)}tr.quote-row[hidden]{display:none!important}td{display:block;padding:0;border:0}td:nth-child(1),td:nth-child(4),td:nth-child(5){display:none}td:nth-child(2){grid-column:1/2}td:nth-child(3){grid-column:1/-1}td:nth-child(6){grid-column:1/2}td:nth-child(7){grid-column:2/3;grid-row:1/2}.detail-button{width:100%}.table-foot{flex-direction:column}.detail-grid{grid-template-columns:1fr}.dialog-body{padding:22px 18px}.dialog-head{padding:22px 18px}.dialog-actions{flex-direction:column}}
+    @media(max-width:420px){.metrics{grid-template-columns:1fr}.concept-badge{display:none}.page-head h1{font-size:2.65rem}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;scroll-behavior:auto!important}}
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html" aria-label="Voltar para a Home da WFP"><img src="assets/wfp-logo-oficial.png" alt="WFP Logística e Transporte"></a>
+      <p class="nav-label">Central comercial</p>
+      <nav class="side-nav" aria-label="Navegação da central">
+        <a class="side-link active" href="#painel"><span class="side-icon">01</span>Painel de cotações</a>
+        <a class="side-link" href="#" data-demo-action="clientes"><span class="side-icon">02</span>Empresas e contatos</a>
+        <a class="side-link" href="#" data-demo-action="relatorios"><span class="side-icon">03</span>Relatórios</a>
+        <a class="side-link" href="#" data-demo-action="configuracoes"><span class="side-icon">04</span>Configurações</a>
+      </nav>
+      <div class="sidebar-foot"><b>Conceito demonstrativo</b>Dados e contatos apresentados nesta tela são fictícios.</div>
+    </aside>
+
+    <main class="main" id="painel">
+      <header class="topbar">
+        <button class="mobile-menu" type="button" aria-controls="sidebar" aria-expanded="false">Menu</button>
+        <div class="crumb">WFP <span>·</span> <b>Central de Cotações</b></div>
+        <div class="top-actions">
+          <span class="concept-badge">Dados fictícios</span>
+          <div class="avatar" aria-hidden="true">MC</div>
+          <div class="user-meta"><b>Mariana Costa</b>Equipe comercial</div>
+        </div>
+      </header>
+
+      <div class="content">
+        <section class="page-head">
+          <div>
+            <div class="eyebrow">Visão comercial</div>
+            <h1>Central de Cotações</h1>
+            <p>Acompanhe cada oportunidade desde a entrada pelo site até a decisão comercial.</p>
+          </div>
+          <button class="primary-button" type="button" data-demo-action="nova">Registrar nova cotação</button>
+        </section>
+
+        <section class="metrics" aria-label="Resumo do período">
+          <article class="metric"><div class="metric-label">Novas solicitações<span class="metric-dot"></span></div><strong>12</strong><small><b>+20%</b> em relação ao período anterior</small></article>
+          <article class="metric"><div class="metric-label">Em análise<span class="metric-dot" style="background:#4d79aa"></span></div><strong>8</strong><small>3 aguardam complemento de dados</small></article>
+          <article class="metric"><div class="metric-label">Propostas enviadas<span class="metric-dot" style="background:#cc731f"></span></div><strong>5</strong><small>R$ 46.800 em oportunidades</small></article>
+          <article class="metric"><div class="metric-label">Fechadas no mês<span class="metric-dot" style="background:#2b8a55"></span></div><strong>3</strong><small><b>60%</b> de conversão sobre propostas</small></article>
+        </section>
+
+        <section class="workspace" aria-label="Lista de cotações">
+          <div class="tabs-wrap">
+            <div class="tabs" role="tablist" aria-label="Etapas das cotações">
+              <button class="tab" type="button" role="tab" aria-selected="true" data-filter="todos">Todas<span class="tab-count">8</span></button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-filter="novo">Novas<span class="tab-count">2</span></button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-filter="analise">Em análise<span class="tab-count">2</span></button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-filter="proposta">Propostas<span class="tab-count">2</span></button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-filter="fechado">Fechadas<span class="tab-count">1</span></button>
+              <button class="tab" type="button" role="tab" aria-selected="false" data-filter="perdido">Perdidas<span class="tab-count">1</span></button>
+            </div>
+          </div>
+
+          <div class="filters">
+            <label class="search"><span hidden>Buscar cotações</span><input id="search" type="search" placeholder="Buscar empresa, origem, destino ou protocolo"></label>
+            <label><span hidden>Filtrar por serviço</span><select id="service-filter"><option value="todos">Todos os serviços</option><option value="Carga fechada">Carga fechada</option><option value="Frete conciliado">Frete conciliado</option><option value="Armazenagem">Armazenagem</option><option value="Empilhadeiras">Empilhadeiras</option></select></label>
+            <label><span hidden>Filtrar por período</span><select id="period-filter"><option value="30">Últimos 30 dias</option><option value="7">Últimos 7 dias</option><option value="90">Últimos 90 dias</option></select></label>
+            <button class="ghost-button" type="button" id="export-button">Exportar planilha</button>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Protocolo</th><th>Empresa</th><th>Rota e serviço</th><th>Recebida em</th><th>Valor potencial</th><th>Status</th><th>Ação</th></tr></thead>
+              <tbody id="quote-list">
+                <tr class="quote-row" data-status="novo" data-service="Carga fechada" data-search="WFP-2048 Metalúrgica Horizonte Campinas SP Curitiba PR carga fechada">
+                  <td class="quote-id">WFP-2048</td><td class="company"><b>Metalúrgica Horizonte</b><span>Renata, Compras</span></td><td class="route"><b>Campinas, SP → Curitiba, PR</b><span>Carga fechada · 8.400 kg</span></td><td class="date"><b>Hoje, 09:42</b><span>Formulário do site</span></td><td><b>R$ 8.900</b></td><td><span class="status status-novo">Nova</span></td><td><button class="detail-button" type="button" data-quote="WFP-2048">Ver detalhes</button></td>
+                </tr>
+                <tr class="quote-row" data-status="novo" data-service="Frete conciliado" data-search="WFP-2047 Atlas Embalagens Jundiaí SP Belo Horizonte MG frete conciliado">
+                  <td class="quote-id">WFP-2047</td><td class="company"><b>Atlas Embalagens</b><span>Lucas, Logística</span></td><td class="route"><b>Jundiaí, SP → Belo Horizonte, MG</b><span>Frete conciliado · 12 pallets</span></td><td class="date"><b>Hoje, 08:15</b><span>Formulário do site</span></td><td><b>R$ 4.200</b></td><td><span class="status status-novo">Nova</span></td><td><button class="detail-button" type="button" data-quote="WFP-2047">Ver detalhes</button></td>
+                </tr>
+                <tr class="quote-row" data-status="analise" data-service="Armazenagem" data-search="WFP-2044 Prisma Equipamentos Mogi Mirim SP armazenagem">
+                  <td class="quote-id">WFP-2044</td><td class="company"><b>Prisma Equipamentos</b><span>Camila, Suprimentos</span></td><td class="route"><b>Mogi Mirim, SP</b><span>Armazenagem · 180 m²</span></td><td class="date"><b>Ontem, 16:30</b><span>Indicação comercial</span></td><td><b>R$ 6.500</b></td><td><span class="status status-analise">Em análise</span></td><td><button class="detail-button" type="button" data-quote="WFP-2044">Ver detalhes</button></td>
+                </tr>
+                <tr class="quote-row" data-status="analise" data-service="Carga fechada" data-search="WFP-2041 NovaSafra Alimentos Ribeirão Preto SP Rio de Janeiro RJ carga fechada">
+                  <td class="quote-id">WFP-2041</td><td class="company"><b>NovaSafra Alimentos</b><span>Paulo, Operações</span></td><td class="route"><b>Ribeirão Preto, SP → Rio de Janeiro, RJ</b><span>Carga fechada · 14.200 kg</span></td><td class="date"><b>06 out, 14:08</b><span>Formulário do site</span></td><td><b>R$ 12.300</b></td><td><span class="status status-analise">Em análise</span></td><td><button class="detail-button" type="button" data-quote="WFP-2041">Ver detalhes</button></td>
+                </tr>
+                <tr class="quote-row" data-status="proposta" data-service="Empilhadeiras" data-search="WFP-2038 Lumina Componentes Sorocaba SP empilhadeiras">
+                  <td class="quote-id">WFP-2038</td><td class="company"><b>Lumina Componentes</b><span>Fernanda, Produção</span></td><td class="route"><b>Sorocaba, SP</b><span>Empilhadeiras · operação pontual</span></td><td class="date"><b>04 out, 11:22</b><span>WhatsApp comercial</span></td><td><b>R$ 3.800</b></td><td><span class="status status-proposta">Proposta enviada</span></td><td><button class="detail-button" type="button" data-quote="WFP-2038">Ver detalhes</button></td>
+                </tr>
+                <tr class="quote-row" data-status="proposta" data-service="Frete conciliado" data-search="WFP-2035 Orion Máquinas Indaiatuba SP Goiânia GO frete conciliado">
+                  <td class="quote-id">WFP-2035</td><td class="company"><b>Orion Máquinas</b><span>Rafael, Expedição</span></td><td class="route"><b>Indaiatuba, SP → Goiânia, GO</b><span>Frete conciliado · 6 volumes</span></td><td class="date"><b>02 out, 09:50</b><span>Formulário do site</span></td><td><b>R$ 5.100</b></td><td><span class="status status-proposta">Proposta enviada</span></td><td><button class="detail-button" type="button" data-quote="WFP-2035">Ver detalhes</button></td>
+                </tr>
+                <tr class="quote-row" data-status="fechado" data-service="Carga fechada" data-search="WFP-2029 Vértice Autopeças Limeira SP Joinville SC carga fechada">
+                  <td class="quote-id">WFP-2029</td><td class="company"><b>Vértice Autopeças</b><span>Bianca, Compras</span></td><td class="route"><b>Limeira, SP → Joinville, SC</b><span>Carga fechada · 9.750 kg</span></td><td class="date"><b>28 set, 13:16</b><span>Cliente recorrente</span></td><td><b>R$ 9.600</b></td><td><span class="status status-fechado">Fechada</span></td><td><button class="detail-button" type="button" data-quote="WFP-2029">Ver detalhes</button></td>
+                </tr>
+                <tr class="quote-row" data-status="perdido" data-service="Armazenagem" data-search="WFP-2024 Delta Utilidades Americana SP armazenagem">
+                  <td class="quote-id">WFP-2024</td><td class="company"><b>Delta Utilidades</b><span>Gustavo, Administrativo</span></td><td class="route"><b>Americana, SP</b><span>Armazenagem · 90 m²</span></td><td class="date"><b>25 set, 10:05</b><span>Formulário do site</span></td><td><b>R$ 2.900</b></td><td><span class="status status-perdido">Não convertida</span></td><td><button class="detail-button" type="button" data-quote="WFP-2024">Ver detalhes</button></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="empty" id="empty-state"><strong>Nenhuma cotação encontrada</strong>Ajuste a busca ou os filtros para ver outros resultados.</div>
+          </div>
+          <div class="table-foot"><span id="result-count">Exibindo 8 cotações demonstrativas</span><span>Atualizado agora</span></div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <dialog id="quote-dialog" aria-labelledby="dialog-title">
+    <div class="dialog-head"><div><small id="dialog-id">WFP-2048</small><h2 id="dialog-title">Metalúrgica Horizonte</h2></div><button class="close-button" type="button" aria-label="Fechar detalhes">×</button></div>
+    <div class="dialog-body">
+      <span class="status status-novo" id="dialog-status">Nova</span>
+      <div class="detail-grid">
+        <div class="detail-card"><span>Contato</span><b id="dialog-contact">Renata · Compras</b></div>
+        <div class="detail-card"><span>Serviço</span><b id="dialog-service">Carga fechada</b></div>
+        <div class="detail-card"><span>Origem</span><b id="dialog-origin">Campinas, SP</b></div>
+        <div class="detail-card"><span>Destino</span><b id="dialog-destination">Curitiba, PR</b></div>
+      </div>
+      <h3 class="section-title">Observação interna</h3>
+      <div class="note" id="dialog-note">Cliente precisa de coleta até sexta-feira. Confirmar dimensões dos volumes e necessidade de seguro adicional.</div>
+      <h3 class="section-title">Histórico da oportunidade</h3>
+      <div class="timeline"><div class="timeline-item"><b>Solicitação recebida pelo site</b><span>Hoje, 09:42</span></div><div class="timeline-item"><b>Responsável comercial definido</b><span>Hoje, 09:47 · Mariana Costa</span></div><div class="timeline-item"><b>Próxima ação sugerida</b><span>Validar dados da carga e preparar retorno</span></div></div>
+      <div class="dialog-actions"><button class="contact-primary" type="button" data-demo-action="whatsapp">Abrir contato no WhatsApp</button><button class="contact-secondary" type="button" data-demo-action="status">Atualizar status</button></div>
+    </div>
+  </dialog>
+  <div class="toast" id="toast" role="status" aria-live="polite"><b>Conceito:</b> <span></span></div>
+
+  <script>
+    const rows=[...document.querySelectorAll('.quote-row')];
+    const tabs=[...document.querySelectorAll('.tab')];
+    const search=document.getElementById('search');
+    const serviceFilter=document.getElementById('service-filter');
+    const resultCount=document.getElementById('result-count');
+    const emptyState=document.getElementById('empty-state');
+    let activeStatus='todos';
+
+    const normalize=value=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+    const updateRows=()=>{
+      const query=normalize(search.value.trim());
+      const service=serviceFilter.value;
+      let visible=0;
+      rows.forEach(row=>{
+        const statusMatch=activeStatus==='todos'||row.dataset.status===activeStatus;
+        const serviceMatch=service==='todos'||row.dataset.service===service;
+        const searchMatch=!query||normalize(row.dataset.search).includes(query);
+        const show=statusMatch&&serviceMatch&&searchMatch;
+        row.hidden=!show;
+        if(show)visible++;
+      });
+      emptyState.style.display=visible?'none':'block';
+      resultCount.textContent=`Exibindo ${visible} ${visible===1?'cotação demonstrativa':'cotações demonstrativas'}`;
+    };
+    tabs.forEach(tab=>tab.addEventListener('click',()=>{
+      tabs.forEach(item=>item.setAttribute('aria-selected','false'));
+      tab.setAttribute('aria-selected','true');
+      activeStatus=tab.dataset.filter;
+      updateRows();
+    }));
+    search.addEventListener('input',updateRows);
+    serviceFilter.addEventListener('change',updateRows);
+
+    const dialog=document.getElementById('quote-dialog');
+    const quoteDetails={
+      'WFP-2048':{company:'Metalúrgica Horizonte',contact:'Renata · Compras',service:'Carga fechada',origin:'Campinas, SP',destination:'Curitiba, PR',status:'Nova',className:'status-novo',note:'Cliente precisa de coleta até sexta-feira. Confirmar dimensões dos volumes e necessidade de seguro adicional.'},
+      'WFP-2047':{company:'Atlas Embalagens',contact:'Lucas · Logística',service:'Frete conciliado',origin:'Jundiaí, SP',destination:'Belo Horizonte, MG',status:'Nova',className:'status-novo',note:'Doze pallets com possibilidade de janela recorrente. Validar frequência mensal e condições de descarga.'},
+      'WFP-2044':{company:'Prisma Equipamentos',contact:'Camila · Suprimentos',service:'Armazenagem',origin:'Mogi Mirim, SP',destination:'Não se aplica',status:'Em análise',className:'status-analise',note:'Necessidade estimada de 180 m² por três meses. Aguardando relação de volumes e giro previsto.'},
+      'WFP-2041':{company:'NovaSafra Alimentos',contact:'Paulo · Operações',service:'Carga fechada',origin:'Ribeirão Preto, SP',destination:'Rio de Janeiro, RJ',status:'Em análise',className:'status-analise',note:'Carga seca paletizada. Confirmar restrições de horário no destino e valor declarado.'},
+      'WFP-2038':{company:'Lumina Componentes',contact:'Fernanda · Produção',service:'Empilhadeiras',origin:'Sorocaba, SP',destination:'Não se aplica',status:'Proposta enviada',className:'status-proposta',note:'Proposta enviada para operação pontual de carga e descarga. Retorno previsto para amanhã.'},
+      'WFP-2035':{company:'Orion Máquinas',contact:'Rafael · Expedição',service:'Frete conciliado',origin:'Indaiatuba, SP',destination:'Goiânia, GO',status:'Proposta enviada',className:'status-proposta',note:'Cliente avaliando prazo e condição comercial. Fazer acompanhamento no próximo dia útil.'},
+      'WFP-2029':{company:'Vértice Autopeças',contact:'Bianca · Compras',service:'Carga fechada',origin:'Limeira, SP',destination:'Joinville, SC',status:'Fechada',className:'status-fechado',note:'Operação aprovada. Registrar oportunidade de recorrência quinzenal após a primeira entrega.'},
+      'WFP-2024':{company:'Delta Utilidades',contact:'Gustavo · Administrativo',service:'Armazenagem',origin:'Americana, SP',destination:'Não se aplica',status:'Não convertida',className:'status-perdido',note:'Cliente optou por uma estrutura já contratada na região. Manter contato para futuras demandas.'}
+    };
+    document.querySelectorAll('[data-quote]').forEach(button=>button.addEventListener('click',()=>{
+      const id=button.dataset.quote;
+      const data=quoteDetails[id];
+      document.getElementById('dialog-id').textContent=id;
+      document.getElementById('dialog-title').textContent=data.company;
+      document.getElementById('dialog-contact').textContent=data.contact;
+      document.getElementById('dialog-service').textContent=data.service;
+      document.getElementById('dialog-origin').textContent=data.origin;
+      document.getElementById('dialog-destination').textContent=data.destination;
+      document.getElementById('dialog-note').textContent=data.note;
+      const status=document.getElementById('dialog-status');
+      status.textContent=data.status;
+      status.className=`status ${data.className}`;
+      dialog.showModal();
+    }));
+    document.querySelector('.close-button').addEventListener('click',()=>dialog.close());
+    dialog.addEventListener('click',event=>{if(event.target===dialog)dialog.close();});
+
+    const toast=document.getElementById('toast');
+    let toastTimer;
+    const showToast=message=>{toast.querySelector('span').textContent=message;toast.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>toast.classList.remove('show'),3200);};
+    document.getElementById('export-button').addEventListener('click',()=>showToast('a exportação para planilha estará disponível na versão funcional.'));
+    document.querySelectorAll('[data-demo-action]').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();const messages={nova:'o cadastro manual poderá ser incluído na versão funcional.',clientes:'a visão de empresas e contatos será detalhada após a validação do conceito.',relatorios:'os relatórios serão definidos conforme os indicadores comerciais da WFP.',configuracoes:'perfis e preferências serão configurados na implementação.',whatsapp:'o contato abrirá a conversa real apenas na versão funcional.',status:'a atualização de status será conectada ao banco de dados na versão funcional.'};showToast(messages[button.dataset.demoAction]);}));
+
+    const menuButton=document.querySelector('.mobile-menu');
+    menuButton.addEventListener('click',()=>{const open=document.body.classList.toggle('menu-open');menuButton.setAttribute('aria-expanded',String(open));});
+    document.querySelectorAll('.side-link').forEach(link=>link.addEventListener('click',()=>{document.body.classList.remove('menu-open');menuButton.setAttribute('aria-expanded','false');}));
+  </script>
+</body>
+</html>
